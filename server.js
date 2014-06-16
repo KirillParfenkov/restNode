@@ -3,7 +3,12 @@ var app = express();
 var path = require('path');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
+var nconf = require('nconf');
 
+
+nconf.argv()
+	.env()
+	.file({file: './config.json'});
 
 //app.use(favicon());
 //app.use(express.logger('dev'));
@@ -36,6 +41,6 @@ app.delete('api/:table/:id', function(req, res) {
 	res.send('DELETE request');
 });
 
-app.listen(1337, function(){
-    console.log('Express server listening on port 1337');
+app.listen(nconf.get('port'), function(){
+    console.log('Express server listening on port ' + nconf.get('port'));
 });
