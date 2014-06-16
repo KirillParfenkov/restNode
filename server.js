@@ -4,25 +4,36 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var nconf = require('nconf');
-
+var mysql = require('mysql');
 
 nconf.argv()
 	.env()
 	.file({file: './config.json'});
 
-//app.use(favicon());
-//app.use(express.logger('dev'));
+var pool = mysql.createPool({
+	connectionLimit : nconf.get('database:connectionLimit'),
+	host : nconf.get('database:uri'),
+	database: nconf.get('database:name'),
+	user: nconf.get('database:user'),
+	password: nconf.get('database:password')
+
+});
+
+var getRequest = 'SELECT * FROM ??';
+var getByIdREquest = 'SELECT ?? FROM ?? WHERE id = ?'
+
 app.use(bodyParser());
 app.use(methodOverride());
-//app.use(app.router);
-//app.use(express.static(path.join(__dirname, "public")));
 
 app.get('/api', function (req, res) {
     res.send('API is running');
 });
 
 app.get('/api/:table', function(req, res) {
-	res.send('GET request');
+	pool.query(getRequest, ['users'], function(err, rows, fields) {
+		if (err) throw err;
+		res.send('rows: ' + rows.length);
+	});
 });
 
 app.post('/api/:table', function(req, res) {

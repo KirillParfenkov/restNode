@@ -1,6 +1,10 @@
 {
 	"port": 1337,
-	"mysql" : {
-		"uri" : "localhost"
+	"database" : {
+		"uri" : "localhost",
+		"name" : "nodeDB",
+		"user" : "root",
+		"password" : "@erbnruqp",
+		"connectionLimit" : 10
 	}
 }

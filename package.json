@@ -7,6 +7,7 @@
     "express": "4.x",
     "body-parser": "1.x",
     "method-override": "2.x",
-    "nconf" : "x"
+    "nconf" : "x",
+    "mysql" : "2.x"
   }
 }
