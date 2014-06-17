@@ -20,7 +20,7 @@ var pool = mysql.createPool({
 });
 
 var getRequest = 'SELECT * FROM ??';
-var getByIdREquest = 'SELECT ?? FROM ?? WHERE id = ?'
+var getByIdREquest = 'SELECT * FROM ?? WHERE id = ?'
 
 app.use(bodyParser());
 app.use(methodOverride());
@@ -30,9 +30,12 @@ app.get('/api', function (req, res) {
 });
 
 app.get('/api/:table', function(req, res) {
-	pool.query(getRequest, ['users'], function(err, rows, fields) {
-		if (err) throw err;
-		res.send('rows: ' + rows.length);
+	pool.query(getRequest, [ req.params.table], function(err, rows, fields) {
+		if (err) {
+			res.json( 400, { error: 'SQL error' });
+		} else {
+			res.json( rows );
+		}
 	});
 });
 
@@ -41,7 +44,13 @@ app.post('/api/:table', function(req, res) {
 });
 
 app.get('/api/:table/:id', function(req, res) {
-	res.send('GET request with id');
+	pool.query(getByIdREquest, [req.params.table, req.params.id], function(err, rows, fields) {
+		if (err || rows.length == 0) {
+			res.json( 400, { error: 'SQL error' });
+		} else {
+			res.json(rows[0]);
+		}
+	});
 });
 
 app.put('/api/:table/:id', function(req, res) {
